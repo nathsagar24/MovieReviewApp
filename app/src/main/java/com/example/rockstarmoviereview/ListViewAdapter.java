@@ -14,9 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.CustomViewHolder> {
     Context context;
     private List<ListItem.Results> results;
+    private static String IMAGE_BASE_URL="https://image.tmdb.org/t/p/w500";
 
     public class CustomViewHolder extends RecyclerView.ViewHolder{
             private TextView movie_name;
@@ -45,7 +48,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.Custom
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         holder.movie_name.setText(results.get(position).getMovieName());
         Picasso.with(holder.icon.getContext())
-                .load("https://image.tmdb.org/t/p/w500"+results.get(position).getBackdrop_path())
+                .load(IMAGE_BASE_URL+results.get(position).getBackdrop_path())
                 .into(holder.icon);
         holder.itemView.setOnClickListener(
                 new View.OnClickListener() {
