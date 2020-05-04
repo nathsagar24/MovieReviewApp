@@ -9,13 +9,9 @@ import retrofit2.http.Query;
 
 public interface tmdbAPI {
 
+    //Movies
     @GET("movie/now_playing")
     Call<ListItem> getMoviesNowPlaying(
-            @Query("api_key")String api_key
-    );
-
-    @GET("tv/on_the_air")
-    Call<ListItem> getShowsOnAir(
             @Query("api_key")String api_key
     );
 
@@ -24,13 +20,19 @@ public interface tmdbAPI {
             @Query("api_key")String api_key
     );
 
-    @GET("tv/popular")
-    Call<ListItem> getPopularTVShows(
+    @GET("movie/upcoming")
+    Call<ListItem> getUpcomingMovies(
             @Query("api_key")String api_key
     );
 
-    @GET("movie/upcoming")
-    Call<ListItem> getUpcomingMovies(
+    //TV Shows
+    @GET("tv/on_the_air")
+    Call<ListItem> getShowsOnAir(
+            @Query("api_key")String api_key
+    );
+
+    @GET("tv/popular")
+    Call<ListItem> getPopularTVShows(
             @Query("api_key")String api_key
     );
 

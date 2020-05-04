@@ -49,8 +49,6 @@ public class ListViewActivity extends AppCompatActivity {
     RecyclerView recyclerViewTVShowsTopRated;
     @Inject
     ListViewAdapter  listViewAdapter;
-    @Inject
-    NowPlayingListViewAdapter nowPlayingListViewAdapter;
     RecyclerView.LayoutManager layoutManager;
     tmdbAPI api;
     Call<ListItem> call;
@@ -59,6 +57,7 @@ public class ListViewActivity extends AppCompatActivity {
     ListAdapterComponent component;
     @BindString(R.string.api_key)
     String API_KEY;
+    private int VIEW_HOLDER_CATEGORY=1;
 
 
     @Override
@@ -78,10 +77,11 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewPopularMovies.setAdapter(listViewAdapter);
@@ -89,8 +89,9 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                VIEW_HOLDER_CATEGORY=1;
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewPopularMovies.setAdapter(listViewAdapter);
@@ -101,24 +102,27 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                VIEW_HOLDER_CATEGORY=0;
+                Log.v("ALERT"," "+VIEW_HOLDER_CATEGORY);
                 listItem = response.body();
                 results=listItem.getResults();
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
-                recyclerViewMoviesNowPlaying.setAdapter(nowPlayingListViewAdapter);
+                recyclerViewMoviesNowPlaying.setAdapter(listViewAdapter);
             }
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                VIEW_HOLDER_CATEGORY=0;
                 Log.v("ALERT","Movies Now Playing Failure");
                 //For testing while api call doesn't work
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
-                recyclerViewMoviesNowPlaying.setAdapter(nowPlayingListViewAdapter);
+                recyclerViewMoviesNowPlaying.setAdapter(listViewAdapter);
             }
         });
 
@@ -126,10 +130,11 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewShowsOnAir.setAdapter(listViewAdapter);
@@ -137,9 +142,10 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                VIEW_HOLDER_CATEGORY=1;
                 //For testing while api call doesn't work
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewShowsOnAir.setAdapter(listViewAdapter);
@@ -151,10 +157,11 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                VIEW_HOLDER_CATEGORY=1;
                 listItem = response.body();
                 results=listItem.getResults();
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewTVShowsPopular.setAdapter(listViewAdapter);
@@ -162,10 +169,11 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                VIEW_HOLDER_CATEGORY=1;
                 Log.v("ALERT","Movies Now Playing Failure");
                 //For testing while api call doesn't work
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewTVShowsPopular.setAdapter(listViewAdapter);
@@ -176,10 +184,11 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewMoviesUpcoming.setAdapter(listViewAdapter);
@@ -187,9 +196,10 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                VIEW_HOLDER_CATEGORY=1;
                 //For testing while api call doesn't work
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewMoviesUpcoming.setAdapter(listViewAdapter);
@@ -201,10 +211,11 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewTVShowsAiringToday.setAdapter(listViewAdapter);
@@ -212,8 +223,9 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                VIEW_HOLDER_CATEGORY=1;
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewTVShowsAiringToday.setAdapter(listViewAdapter);
@@ -224,10 +236,11 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewMoviesTopRated.setAdapter(listViewAdapter);
@@ -235,9 +248,10 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                VIEW_HOLDER_CATEGORY=1;
                 //For testing while api call doesn't work
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewMoviesTopRated.setAdapter(listViewAdapter);
@@ -249,10 +263,11 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewTVShowsTopRated.setAdapter(listViewAdapter);
@@ -260,8 +275,9 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                VIEW_HOLDER_CATEGORY=1;
                 component=DaggerListAdapterComponent.builder()
-                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
                         .build();
                 component.inject(ListViewActivity.this);
                 recyclerViewTVShowsTopRated.setAdapter(listViewAdapter);
