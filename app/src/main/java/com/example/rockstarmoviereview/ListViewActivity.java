@@ -16,6 +16,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dagger.internal.DaggerCollections;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,68 +29,273 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListViewActivity extends AppCompatActivity {
 
-    private Button logout_button;
-    private RecyclerView recyclerView;
+    @BindView(R.id.logout_button)
+    Button logout_button;
+    @BindView(R.id.movies_popular_recycler_view)
+    RecyclerView recyclerViewPopularMovies;
+    @BindView(R.id.movies_now_playing_recycler_view)
+    RecyclerView recyclerViewMoviesNowPlaying;
+    @BindView(R.id.shows_on_air_recycler_view)
+    RecyclerView recyclerViewShowsOnAir;
+    @BindView(R.id.tvshows_popular_recycler_view)
+    RecyclerView recyclerViewTVShowsPopular;
+    @BindView(R.id.movies_upcoming_recycler_view)
+    RecyclerView recyclerViewMoviesUpcoming;
+    @BindView(R.id.tvshows_airing_today_recycler_view)
+    RecyclerView recyclerViewTVShowsAiringToday;
+    @BindView(R.id.movies_top_rated_recycler_view)
+    RecyclerView recyclerViewMoviesTopRated;
+    @BindView(R.id.tvshows_top_rated_recycler_view)
+    RecyclerView recyclerViewTVShowsTopRated;
     @Inject
     ListViewAdapter  listViewAdapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private tmdbAPI api;
-    private Call<ListItem> call;
-    private ListItem listItems;
-    private List<ListItem.Results> results;
-    private ListAdapterComponent component;
-    public static String API_KEY="412956dda4b6897f4a828149dfceb7fc";
+    @Inject
+    NowPlayingListViewAdapter nowPlayingListViewAdapter;
+    RecyclerView.LayoutManager layoutManager;
+    tmdbAPI api;
+    Call<ListItem> call;
+    ListItem listItem;
+    List<ListItem.Results> results;
+    ListAdapterComponent component;
+    @BindString(R.string.api_key)
+    String API_KEY;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
+        ButterKnife.bind(this);
+        //Doing multiple recycler views in a less redundant way
         initRecyclerView();
-        initLogout();
         initRetrofit();
     }
 
     private void initRetrofit(){
         api=RetrofitAPIProvider.getRetrofitAPI();
-        call=api.getListItems(API_KEY);
+
+        call=api.getPopularMovies(API_KEY);
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
-                listItems=response.body();
-                results=listItems.getResults();
-                setListAdapter(results);
+                listItem=response.body();
+                results=listItem.getResults();
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewPopularMovies.setAdapter(listViewAdapter);
             }
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewPopularMovies.setAdapter(listViewAdapter);
+            }
+        });
+
+        call=api.getMoviesNowPlaying(API_KEY);
+        call.enqueue(new Callback<ListItem>() {
+            @Override
+            public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                listItem = response.body();
+                results=listItem.getResults();
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewMoviesNowPlaying.setAdapter(nowPlayingListViewAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<ListItem> call, Throwable t) {
+                Log.v("ALERT","Movies Now Playing Failure");
+                //For testing while api call doesn't work
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewMoviesNowPlaying.setAdapter(nowPlayingListViewAdapter);
+            }
+        });
+
+        call=api.getShowsOnAir(API_KEY);
+        call.enqueue(new Callback<ListItem>() {
+            @Override
+            public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                listItem=response.body();
+                results=listItem.getResults();
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewShowsOnAir.setAdapter(listViewAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<ListItem> call, Throwable t) {
+                //For testing while api call doesn't work
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewShowsOnAir.setAdapter(listViewAdapter);
                 Log.v("ALERT","FAILURE in API Call"+t.getMessage());
 
             }
         });
-    }
+        call=api.getPopularTVShows(API_KEY);
+        call.enqueue(new Callback<ListItem>() {
+            @Override
+            public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                listItem = response.body();
+                results=listItem.getResults();
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewTVShowsPopular.setAdapter(listViewAdapter);
+            }
 
-    private void setListAdapter(List<ListItem.Results> results){
-        component=DaggerListAdapterComponent.builder()
-                .listModule(new ListModule(results,this))
-                .build();
-        component.inject(ListViewActivity.this);
-        Log.v("ALERT","RESPONSED"+listViewAdapter);
-        recyclerView.setAdapter(listViewAdapter);
+            @Override
+            public void onFailure(Call<ListItem> call, Throwable t) {
+                Log.v("ALERT","Movies Now Playing Failure");
+                //For testing while api call doesn't work
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewTVShowsPopular.setAdapter(listViewAdapter);
+            }
+        });
+
+        call=api.getUpcomingMovies(API_KEY);
+        call.enqueue(new Callback<ListItem>() {
+            @Override
+            public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                listItem=response.body();
+                results=listItem.getResults();
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewMoviesUpcoming.setAdapter(listViewAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<ListItem> call, Throwable t) {
+                //For testing while api call doesn't work
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewMoviesUpcoming.setAdapter(listViewAdapter);
+                Log.v("ALERT","FAILURE in API Call"+t.getMessage());
+
+            }
+        });
+        call=api.getTVShowsAiringToday(API_KEY);
+        call.enqueue(new Callback<ListItem>() {
+            @Override
+            public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                listItem=response.body();
+                results=listItem.getResults();
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewTVShowsAiringToday.setAdapter(listViewAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<ListItem> call, Throwable t) {
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewTVShowsAiringToday.setAdapter(listViewAdapter);
+            }
+        });
+
+        call=api.getTopRatedMovies(API_KEY);
+        call.enqueue(new Callback<ListItem>() {
+            @Override
+            public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                listItem=response.body();
+                results=listItem.getResults();
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewMoviesTopRated.setAdapter(listViewAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<ListItem> call, Throwable t) {
+                //For testing while api call doesn't work
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewMoviesTopRated.setAdapter(listViewAdapter);
+                Log.v("ALERT","FAILURE in API Call"+t.getMessage());
+
+            }
+        });
+        call=api.getTopRatedTVShows(API_KEY);
+        call.enqueue(new Callback<ListItem>() {
+            @Override
+            public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                listItem=response.body();
+                results=listItem.getResults();
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewTVShowsTopRated.setAdapter(listViewAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<ListItem> call, Throwable t) {
+                component=DaggerListAdapterComponent.builder()
+                        .listModule(new ListModule(results,ListViewActivity.this))
+                        .build();
+                component.inject(ListViewActivity.this);
+                recyclerViewTVShowsTopRated.setAdapter(listViewAdapter);
+            }
+        });
+
     }
 
     private void initRecyclerView(){
-        recyclerView=findViewById(R.id.recycler_view);
         layoutManager=new LinearLayoutManager(this);
-        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-    }
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recyclerViewPopularMovies.setLayoutManager(layoutManager);
+        layoutManager=new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recyclerViewMoviesNowPlaying.setLayoutManager(layoutManager);
+        layoutManager=new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recyclerViewShowsOnAir.setLayoutManager(layoutManager);
+        layoutManager=new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recyclerViewTVShowsPopular.setLayoutManager(layoutManager);
+        layoutManager=new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recyclerViewMoviesUpcoming.setLayoutManager(layoutManager);
+        layoutManager=new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recyclerViewTVShowsAiringToday.setLayoutManager(layoutManager);
+        layoutManager=new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recyclerViewMoviesTopRated.setLayoutManager(layoutManager);
+        layoutManager=new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recyclerViewTVShowsTopRated.setLayoutManager(layoutManager);
 
-    private void initLogout(){
-        logout_button=findViewById(R.id.logout_button);
-        logout_button.setOnClickListener(
-                listener
-        );
     }
 
     private void clearSession(){
@@ -95,15 +304,11 @@ public class ListViewActivity extends AppCompatActivity {
         sharedPreferences.edit().remove("pass").commit();
     }
 
-    View.OnClickListener listener=new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            clearSession();
-            ListViewActivity.this.finish();
-            //Intent intent=new Intent(ListViewActivity.this,LoginActivity.class);
-            //startActivity(intent);
-        }
-    };
+    @OnClick(R.id.logout_button)
+    void logoutButtonPressed(){
+        clearSession();
+        ListViewActivity.this.finish();
+    }
 
     @Override
     public void onBackPressed() {

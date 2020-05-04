@@ -12,7 +12,6 @@ public class ListModule {
     private List<ListItem.Results> results;
     private Context context;
 
-
     public ListModule(List<ListItem.Results> results, Context context) {
         this.results = results;
         this.context = context;
@@ -22,5 +21,10 @@ public class ListModule {
     ListViewAdapter provideAdapter(){
     return new ListViewAdapter(results, context);
 }
+
+    @Provides
+    NowPlayingListViewAdapter provideNowPlayingAdapter(){
+        return new NowPlayingListViewAdapter(results, context);
+    }
 
 }

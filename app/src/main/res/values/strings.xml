@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RockstarMovieReview</string>
+    <string name="api_key">412956dda4b6897f4a828149dfceb7fc</string>
+    <string name="image_prefix">https://image.tmdb.org/t/p/w500</string>
 </resources>

@@ -21,7 +21,7 @@ public class ListItem {
 
     public static class Results{
 
-        @SerializedName("original_title")
+        @SerializedName(value="original_title", alternate={"original_name"})
         private String movieName;
         private String backdrop_path;
         private int id;
