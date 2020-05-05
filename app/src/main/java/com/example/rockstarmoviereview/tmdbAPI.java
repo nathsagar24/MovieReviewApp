@@ -54,8 +54,9 @@ public interface tmdbAPI {
 
 
 
-    @GET("movie/{id}")
-    Call<MovieDetails> getMovieDetails(
+    @GET("{programme}/{id}")
+    Call<ProgrammeDetails> getProgrammeDetails(
+            @Path("programme")String programme,
             @Path("id")int id,
             @Query("api_key")String api_key
     );

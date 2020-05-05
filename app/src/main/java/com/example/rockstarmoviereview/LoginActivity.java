@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent=new Intent(this,ListViewActivity.class);
             startActivity(intent);
         }
+
     }
 
     private boolean isAuthorized(){

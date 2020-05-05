@@ -57,7 +57,8 @@ public class ListViewActivity extends AppCompatActivity {
     ListAdapterComponent component;
     @BindString(R.string.api_key)
     String API_KEY;
-    private int VIEW_HOLDER_CATEGORY=1;
+    private int VIEW_HOLDER_CATEGORY;
+    private int PROGRAMME_CATEGORY;
 
 
     @Override
@@ -77,6 +78,7 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                PROGRAMME_CATEGORY=0;
                 VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
@@ -89,6 +91,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                PROGRAMME_CATEGORY=0;
                 VIEW_HOLDER_CATEGORY=1;
                 component=DaggerListAdapterComponent.builder()
                         .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
@@ -102,6 +105,7 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                PROGRAMME_CATEGORY=0;
                 VIEW_HOLDER_CATEGORY=0;
                 Log.v("ALERT"," "+VIEW_HOLDER_CATEGORY);
                 listItem = response.body();
@@ -115,6 +119,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                PROGRAMME_CATEGORY=0;
                 VIEW_HOLDER_CATEGORY=0;
                 Log.v("ALERT","Movies Now Playing Failure");
                 //For testing while api call doesn't work
@@ -130,6 +135,7 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                PROGRAMME_CATEGORY=1;
                 VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
@@ -142,6 +148,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                PROGRAMME_CATEGORY=1;
                 VIEW_HOLDER_CATEGORY=1;
                 //For testing while api call doesn't work
                 component=DaggerListAdapterComponent.builder()
@@ -157,6 +164,7 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                PROGRAMME_CATEGORY=1;
                 VIEW_HOLDER_CATEGORY=1;
                 listItem = response.body();
                 results=listItem.getResults();
@@ -169,6 +177,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                PROGRAMME_CATEGORY=1;
                 VIEW_HOLDER_CATEGORY=1;
                 Log.v("ALERT","Movies Now Playing Failure");
                 //For testing while api call doesn't work
@@ -184,6 +193,7 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                PROGRAMME_CATEGORY=0;
                 VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
@@ -196,6 +206,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                PROGRAMME_CATEGORY=0;
                 VIEW_HOLDER_CATEGORY=1;
                 //For testing while api call doesn't work
                 component=DaggerListAdapterComponent.builder()
@@ -211,6 +222,7 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                PROGRAMME_CATEGORY=1;
                 VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
@@ -223,6 +235,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                PROGRAMME_CATEGORY=1;
                 VIEW_HOLDER_CATEGORY=1;
                 component=DaggerListAdapterComponent.builder()
                         .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))
@@ -236,6 +249,7 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                PROGRAMME_CATEGORY=0;
                 VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
@@ -248,6 +262,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                PROGRAMME_CATEGORY=0;
                 VIEW_HOLDER_CATEGORY=1;
                 //For testing while api call doesn't work
                 component=DaggerListAdapterComponent.builder()
@@ -263,6 +278,7 @@ public class ListViewActivity extends AppCompatActivity {
         call.enqueue(new Callback<ListItem>() {
             @Override
             public void onResponse(Call<ListItem> call, Response<ListItem> response) {
+                PROGRAMME_CATEGORY=1;
                 VIEW_HOLDER_CATEGORY=1;
                 listItem=response.body();
                 results=listItem.getResults();
@@ -275,6 +291,7 @@ public class ListViewActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ListItem> call, Throwable t) {
+                PROGRAMME_CATEGORY=1;
                 VIEW_HOLDER_CATEGORY=1;
                 component=DaggerListAdapterComponent.builder()
                         .listModule(new ListModule(results,ListViewActivity.this,VIEW_HOLDER_CATEGORY))

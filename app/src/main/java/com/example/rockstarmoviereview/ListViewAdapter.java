@@ -86,9 +86,9 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.Custom
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent=new Intent(context,MovieDetailsActivity.class);
-                        intent.putExtra("Id",results.get(position).getId());
-                        context.startActivity(intent);
+                      //  Intent intent=new Intent(context,MovieDetailsActivity.class);
+                       // intent.putExtra("Id",results.get(position).getId());
+                        //context.startActivity(intent);
                     }
                 }
         );
